@@ -33,6 +33,14 @@ public:
 		if (index >= 0 && index < size) return *array[index];
 		else if (index < 0 && -index <= size) return *array[size + index];
 	}
+	void set_object(int index, AbstractClass element) {
+		//Set value by index
+		int parametr = 0; //for negative index
+		if (index < 0) parametr = size;
+		if ((index >= 0 && index < size) || (index < 0 && -index <= size)) {
+			*array[index + parametr] = element;
+		}
+	}
 	void push_back(AbstractClass element) {
 		size += 1;
 		AbstractClass** temp_arr = new AbstractClass * [size];
@@ -49,16 +57,34 @@ public:
 		}
 		delete[] temp_arr;
 	}
+	void push_front(AbstractClass element) {
+		size += 1;
+		AbstractClass** temp_arr = new AbstractClass * [size];
+		temp_arr[0] = new AbstractClass(element);
+		for (int i = 1; i < size; i++) {
+			temp_arr[i] = new AbstractClass(*array[i - 1]);
+			delete array[i - 1];
+		}
+		delete[] array;
+		array = new AbstractClass * [size];
+		for (int i = 0; i < size; i++) {
+			array[i] = new AbstractClass(*temp_arr[i]);
+			delete temp_arr[i];
+		}
+		delete[] temp_arr;
+	}
 };
 
 
 int main() {
 
 	Container<int> c(4);
-	c.push_back(1);
+	c.push_front(1);
 	for (int i = 0; i < c.get_size(); i++) {
 		cout << c.get_object(i) << endl;
 	}
+	c.set_object(2, 4);
+	cout << c.get_object(2);
 
 	return 0;
 }
