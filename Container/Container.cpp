@@ -32,6 +32,7 @@ public:
 		//Return element in container
 		if (index >= 0 && index < size) return *array[index];
 		else if (index < 0 && -index <= size) return *array[size + index];
+		else return *array[size - 1];
 	}
 	void set_object(int index, AbstractClass element) {
 		//Set value by index
@@ -98,13 +99,40 @@ public:
 		}
 		else this->push_back(element);
 	}
+	void remove(int index) {
+		int parametr = 0; //for negative index
+		if (index < 0) parametr = size;
+		if (index + parametr < size) {
+			size--;
+			AbstractClass** temp_arr = new AbstractClass * [size];
+			for (int i = 0; i < index; i++) {
+				temp_arr[i] = new AbstractClass(*array[i]);
+				delete array[i];
+			}
+			delete array[index];
+			for (int i = index + 1; i < size + 1; i++) {
+				temp_arr[i - 1] = new AbstractClass(*array[i]);
+				delete array[i];
+			}
+			delete[] array;
+			array = new AbstractClass * [size];
+			for (int i = 0; i < size; i++) {
+				array[i] = new AbstractClass(*temp_arr[i]);
+				delete temp_arr[i];
+			}
+			delete[] temp_arr;
+		}
+	}
 };
 
 
 int main() {
 
 	Container<int> c(4);
-	c.insert(2, 3);
+	for (int i = 0; i < c.get_size(); i++) {
+		c.set_object(i, i);
+	}
+	c.remove(2);
 	for (int i = 0; i < c.get_size(); i++) {
 		cout << c.get_object(i) << endl;
 	}
