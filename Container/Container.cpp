@@ -77,7 +77,7 @@ public:
 	void insert(int index, AbstractClass element) {
 		int parametr = 0; //for negative index
 		if (index < 0) parametr = size;
-		if (index + parametr < size) {
+		if (index + parametr >= 0 && index + parametr < size) {
 			size++;
 			AbstractClass** temp_arr = new AbstractClass * [size];
 			for (int i = 0; i < index + parametr; i++) {
@@ -102,15 +102,15 @@ public:
 	void remove(int index) {
 		int parametr = 0; //for negative index
 		if (index < 0) parametr = size;
-		if (index + parametr < size) {
+		if (index + parametr >= 0 && index + parametr < size) {
 			size--;
 			AbstractClass** temp_arr = new AbstractClass * [size];
-			for (int i = 0; i < index; i++) {
+			for (int i = 0; i < index + parametr; i++) {
 				temp_arr[i] = new AbstractClass(*array[i]);
 				delete array[i];
 			}
-			delete array[index];
-			for (int i = index + 1; i < size + 1; i++) {
+			delete array[index + parametr];
+			for (int i = index + parametr + 1; i < size + 1; i++) {
 				temp_arr[i - 1] = new AbstractClass(*array[i]);
 				delete array[i];
 			}
