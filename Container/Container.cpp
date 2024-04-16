@@ -165,6 +165,7 @@ public:
 int random_number(int start, int end) {
 	return rand() % (end - start + 1) + start;
 }
+
 void random_create_object(Container<Point>& container) {
 	int number;
 	for (int i = 0; i < container.get_size(); i++) {
@@ -172,9 +173,14 @@ void random_create_object(Container<Point>& container) {
 		if (number == 0) { Point p(random_number(0, 100), random_number(0, 100)); container.set_object(i, p); }
 		else { ColoredPoint p(random_number(0, 100), random_number(0, 100), 0); container.set_object(i, p); }
 	}
-};
+}
+
 void random_add_object(Container<Point>& container, Point object) {
 	container.insert(random_number(0, container.get_size() - 1), object);
+}
+
+Point random_choice_object(Container<Point>& container) {
+	return container.get_object(random_number(0, container.get_size() - 1));
 }
 
 
@@ -182,9 +188,9 @@ int main() {
 
 	srand(time(0));
 	Container<Point> c(5);
-	ColoredPoint p;
 	random_create_object(c);
-	random_add_object(c, p);
 	c.applyFunction([](Point l) { l.view_coords(); });
+	cout << "---\n";
+	random_choice_object(c).view_coords();
 
 }
