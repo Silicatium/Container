@@ -173,13 +173,18 @@ void random_create_object(Container<Point>& container) {
 		else { ColoredPoint p(random_number(0, 100), random_number(0, 100), 0); container.set_object(i, p); }
 	}
 };
+void random_add_object(Container<Point>& container, Point object) {
+	container.insert(random_number(0, container.get_size() - 1), object);
+}
 
 
 int main() {
 
 	srand(time(0));
 	Container<Point> c(5);
+	ColoredPoint p;
 	random_create_object(c);
+	random_add_object(c, p);
 	c.applyFunction([](Point l) { l.view_coords(); });
 
 }
