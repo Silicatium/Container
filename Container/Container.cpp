@@ -183,6 +183,10 @@ Point random_choice_object(Container<Point>& container) {
 	return container.get_object(random_number(0, container.get_size() - 1));
 }
 
+void random_remove(Container<Point>& container) {
+	container.remove(random_number(0, container.get_size() - 1));
+}
+
 
 int main() {
 
@@ -190,7 +194,8 @@ int main() {
 	Container<Point> c(5);
 	random_create_object(c);
 	c.applyFunction([](Point l) { l.view_coords(); });
-	cout << "---\n";
-	random_choice_object(c).view_coords();
+	cout << "---\n\n";
+	random_remove(c);
+	c.applyFunction([](Point l) { l.view_coords(); });
 
 }
