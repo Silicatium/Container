@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -8,13 +9,13 @@ private:
 	int size;
 	AbstractClass** array;
 public:
-	Container() : size(0), array(new AbstractClass * [0]) {}
-	Container(int size) : size(size), array(new AbstractClass * [size]) {
+	Container() : size(0), array(new AbstractClass* [0]) {}
+	Container(int size) : size(size), array(new AbstractClass* [size]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = new AbstractClass();
 		}
 	}
-	Container(const Container& с) : size(с.size), array(new AbstractClass * [с.size]) {
+	Container(const Container& с) : size(с.size), array(new AbstractClass* [с.size]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = new AbstractClass(*(с.array[i]));
 		}
@@ -123,19 +124,62 @@ public:
 			delete[] temp_arr;
 		}
 	}
+	AbstractClass removeWithGet(int index) {
+		AbstractClass temp = this->get_object(index);
+		this->remove(index);
+
+		return temp;
+	}
+	void applyFunction(void function(AbstractClass)) {
+		for (int i = 0; i < size; i++) {
+			function(*array[i]);
+		}
+
+	}
+};
+
+class Point {
+private:
+	int x;
+	int y;
+public:
+	Point() : x(0), y(0) {};
+	Point(int x, int y) : x(x), y(y) {};
+	Point(const Point& p) : x(p.x), y(p.y) {}
+	~Point() { x = 0; y = 0; }
+	void view_coords() {
+		printf("x = %d\ny = %d\n\n", x, y);
+	}
+};
+
+class ColoredPoint : public Point {
+private:
+	int color;
+public:
+	ColoredPoint() : color(0) {};
+	ColoredPoint(int x, int y, int color) : Point(x, y), color(color) {};
+	ColoredPoint(const ColoredPoint& cp) : Point(cp), color(cp.color) {}
+	~ColoredPoint() { color = 0; }
+};
+
+int random_number(int start, int end) {
+	return rand() % (end - start + 1) + start;
+}
+void random_create_object(Container<Point>& container) {
+	int number;
+	for (int i = 0; i < container.get_size(); i++) {
+		number = random_number(0, 1);
+		if (number == 0) { Point p(random_number(0, 100), random_number(0, 100)); container.set_object(i, p); }
+		else { ColoredPoint p(random_number(0, 100), random_number(0, 100), 0); container.set_object(i, p); }
+	}
 };
 
 
 int main() {
 
-	Container<int> c(4);
-	for (int i = 0; i < c.get_size(); i++) {
-		c.set_object(i, i);
-	}
-	c.remove(2);
-	for (int i = 0; i < c.get_size(); i++) {
-		cout << c.get_object(i) << endl;
-	}
+	srand(time(0));
+	Container<Point> c(5);
+	random_create_object(c);
+	c.applyFunction([](Point l) { l.view_coords(); });
 
-	return 0;
 }
