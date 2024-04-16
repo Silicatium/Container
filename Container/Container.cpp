@@ -1,7 +1,9 @@
 ﻿#include <iostream>
 #include <ctime>
+#include <chrono>
 
 using namespace std;
+using namespace chrono;
 
 template <class AbstractClass>
 class Container {
@@ -9,13 +11,13 @@ private:
 	int size;
 	AbstractClass** array;
 public:
-	Container() : size(0), array(new AbstractClass* [0]) {}
-	Container(int size) : size(size), array(new AbstractClass* [size]) {
+	Container() : size(0), array(new AbstractClass * [0]) {}
+	Container(int size) : size(size), array(new AbstractClass * [size]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = new AbstractClass();
 		}
 	}
-	Container(const Container& с) : size(с.size), array(new AbstractClass* [с.size]) {
+	Container(const Container& с) : size(с.size), array(new AbstractClass * [с.size]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = new AbstractClass(*(с.array[i]));
 		}
@@ -163,10 +165,11 @@ public:
 };
 
 int random_number(int start, int end) {
-	return rand() % (end - start + 1) + start;
+	if ((end - start + 1) + start != 0) return rand() % (end - start + 1) + start;
+	else return 0;
 }
 
-void random_create_object(Container<Point>& container) {
+void random_create_objects(Container<Point>& container) {
 	int number;
 	for (int i = 0; i < container.get_size(); i++) {
 		number = random_number(0, 1);
@@ -190,12 +193,36 @@ void random_remove(Container<Point>& container) {
 
 int main() {
 
-	srand(time(0));
-	Container<Point> c(5);
-	random_create_object(c);
-	c.applyFunction([](Point l) { l.view_coords(); });
-	cout << "---\n\n";
-	random_remove(c);
-	c.applyFunction([](Point l) { l.view_coords(); });
+	srand(time(0)); //disabling random number storage
 
+	Container<Point> c(0);
+	Point* p; //for random create 1 object in cycle
+	int countOfActions;
+	int randomEvent;
+	random_create_objects(c);
+	cin >> countOfActions;
+	system_clock::time_point startTime = system_clock::now();
+	for (int i = 0; i < countOfActions; i++) {
+		if (c.get_size() != 0) randomEvent = random_number(0, 2);
+		else randomEvent = random_number(0, 1);
+		switch (randomEvent) {
+		case 0:
+			p = new Point(random_number(0, 100), random_number(0, 100));
+			random_add_object(c, *p);
+			delete p;
+			break;
+		case 1:
+			random_remove(c);
+			break;
+		case 2:
+			random_choice_object(c).view_coords();
+			break;
+		}
+	}
+	system_clock::time_point endTime = system_clock::now();
+	//c.applyFunction([](Point l) { l.view_coords(); });
+	system("cls");
+	cout << "Cycle work time: " << duration_cast<milliseconds>(endTime - startTime).count() << " milliseconds" << endl;
+
+	return 0;
 }
