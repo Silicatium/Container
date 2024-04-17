@@ -10,6 +10,9 @@ class Container {
 private:
 	int size;
 	AbstractClass** array;
+	void checked_empty_container() {
+		if (size == 0) throw exception("Container is empty!");
+	}
 public:
 	Container() : size(0), array(new AbstractClass * [0]) {}
 	Container(int size) : size(size), array(new AbstractClass * [size]) {
@@ -33,9 +36,15 @@ public:
 	}
 	AbstractClass get_object(int index) {
 		//Return element in container
-		if (index >= 0 && index < size) return *array[index];
-		else if (index < 0 && -index <= size) return *array[size + index];
-		else return *array[size - 1];
+		try {
+			this->checked_empty_container();
+			if (index >= 0 && index < size) return *array[index];
+			else if (index < 0 && -index <= size) return *array[size + index];
+			else return *array[size - 1];
+		}
+		catch (const exception& ex) {
+			cout << ex.what() << endl;
+		}
 	}
 	void set_object(int index, AbstractClass element) {
 		//Set value by index
@@ -195,7 +204,7 @@ int main() {
 
 	srand(time(0)); //disabling random number storage
 
-	Container<Point> c(0);
+	Container<Point> c(10);
 	Point* p; //for random create 1 object in cycle
 	int countOfActions;
 	int randomEvent;
