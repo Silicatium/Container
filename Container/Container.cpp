@@ -84,34 +84,11 @@ public:
 	}
 	void push_front(AbstractClass element) {
 		size++;
-		if (memory < size) memory += additional_memory;
-		AbstractClass** temp_arr = new AbstractClass * [size];
-		temp_arr[0] = new AbstractClass(element);
-		for (int i = 1; i < size; i++) {
-			temp_arr[i] = new AbstractClass(*array[i - 1]);
-			delete array[i - 1];
-		}
-		delete[] array;
-		array = new AbstractClass * [memory];
-		for (int i = 0; i < size; i++) {
-			array[i] = new AbstractClass(*temp_arr[i]);
-			delete temp_arr[i];
-		}
-		delete[] temp_arr;
-	}
-	void insert(int index, AbstractClass element) {
-		int parametr = 0; //for negative index
-		if (index < 0) parametr = size;
-		if (index + parametr >= 0 && index + parametr < size) {
-			size++;
-			if (memory < size) memory += additional_memory;
+		if (memory < size) {
+			memory += additional_memory;
 			AbstractClass** temp_arr = new AbstractClass * [size];
-			for (int i = 0; i < index + parametr; i++) {
-				temp_arr[i] = new AbstractClass(*array[i]);
-				delete array[i];
-			}
-			temp_arr[index + parametr] = new AbstractClass(element);
-			for (int i = index + parametr + 1; i < size; i++) {
+			temp_arr[0] = new AbstractClass(element);
+			for (int i = 1; i < size; i++) {
 				temp_arr[i] = new AbstractClass(*array[i - 1]);
 				delete array[i - 1];
 			}
@@ -122,6 +99,47 @@ public:
 				delete temp_arr[i];
 			}
 			delete[] temp_arr;
+		}
+		else {
+			array[size - 1] = new AbstractClass();
+			for (int i = size - 1; i > 0; i--) {
+				*array[i] = *array[i - 1];
+			}
+			*array[0] = element;
+		}
+	}
+	void insert(int index, AbstractClass element) {
+		int parametr = 0; //for negative index
+		if (index < 0) parametr = size;
+		if (index + parametr >= 0 && index + parametr < size) {
+			size++;
+			if (memory < size) {
+				memory += additional_memory;
+				AbstractClass** temp_arr = new AbstractClass * [size];
+				for (int i = 0; i < index + parametr; i++) {
+					temp_arr[i] = new AbstractClass(*array[i]);
+					delete array[i];
+				}
+				temp_arr[index + parametr] = new AbstractClass(element);
+				for (int i = index + parametr + 1; i < size; i++) {
+					temp_arr[i] = new AbstractClass(*array[i - 1]);
+					delete array[i - 1];
+				}
+				delete[] array;
+				array = new AbstractClass * [memory];
+				for (int i = 0; i < size; i++) {
+					array[i] = new AbstractClass(*temp_arr[i]);
+					delete temp_arr[i];
+				}
+				delete[] temp_arr;
+			}
+			else {
+				array[size - 1] = new AbstractClass();
+				for (int i = size - 1; i > index + parametr; i--) {
+					*array[i] = *array[i - 1];
+				}
+				*array[index + parametr] = element;
+			}
 		}
 		else this->push_back(element);
 	}
@@ -134,23 +152,10 @@ public:
 		if (index < 0) parametr = size;
 		if (index + parametr >= 0 && index + parametr < size) {
 			size--;
-			AbstractClass** temp_arr = new AbstractClass * [size];
-			for (int i = 0; i < index + parametr; i++) {
-				temp_arr[i] = new AbstractClass(*array[i]);
-				delete array[i];
+			for (int i = index + parametr; i < size; i++) {
+				*array[i] = *array[i + 1];
 			}
-			delete array[index + parametr];
-			for (int i = index + parametr + 1; i < size + 1; i++) {
-				temp_arr[i - 1] = new AbstractClass(*array[i]);
-				delete array[i];
-			}
-			delete[] array;
-			array = new AbstractClass * [memory];
-			for (int i = 0; i < size; i++) {
-				array[i] = new AbstractClass(*temp_arr[i]);
-				delete temp_arr[i];
-			}
-			delete[] temp_arr;
+			delete array[size];
 		}
 	}
 	AbstractClass removeWithGet(int index) {
@@ -219,7 +224,6 @@ void random_remove(Container<Point>& container) {
 
 
 int main() {
-
 	srand(time(0)); //disabling random number storage
 
 	Container<Point> c(10);
