@@ -60,7 +60,7 @@ public:
 		}
 	}
 	void set_additional_memory(int quantity) {
-		additional_memory = quantity;
+		 if (quantity >= 10 && quantity <= 10000) additional_memory = quantity;
 	}
 	void push_back(AbstractClass element) {
 		size++;
