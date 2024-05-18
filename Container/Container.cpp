@@ -144,8 +144,10 @@ public:
 		else this->push_back(element);
 	}
 	void pop() {
-		size--;
-		delete array[size];
+		if (szie > 0) {
+			size--;
+			delete array[size];
+		}
 	}
 	void remove(int index) {
 		int parametr = 0; //for negative index
