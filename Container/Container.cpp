@@ -22,7 +22,7 @@ public:
 			array[i] = new AbstractClass();
 		}
 	}
-	Container(const Container& c) : size(c.size), memory(c.size), array(new AbstractClass* [c.memory]) {
+	Container(const Container& c) : size(c.size), memory(c.memory), array(new AbstractClass* [c.memory]) {
 		for (int i = 0; i < size; i++) {
 			array[i] = new AbstractClass(*(c.array[i]));
 		}
@@ -60,7 +60,7 @@ public:
 		}
 	}
 	void set_additional_memory(int quantity) {
-		 if (quantity >= 10 && quantity <= 10000) additional_memory = quantity;
+		if (quantity >= 10 && quantity <= 10000) additional_memory = quantity;
 	}
 	void push_back(AbstractClass element) {
 		size++;
@@ -144,10 +144,10 @@ public:
 		else this->push_back(element);
 	}
 	void pop() {
-		if (szie > 0) {
-			size--;
-			delete array[size];
-		}
+
+		size--;
+		delete array[size];
+
 	}
 	void remove(int index) {
 		int parametr = 0; //for negative index
