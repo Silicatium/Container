@@ -145,8 +145,7 @@ public:
 	}
 	void pop() {
 
-		size--;
-		delete array[size];
+		remove(size - 1);
 
 	}
 	void remove(int index) {
